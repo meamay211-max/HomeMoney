@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HomeMoney</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+      background-color: #eef1ee;
+      margin: 0;
+      padding: 24px 16px;
+      color: #2c3e50;
+    }
+
+    .app-title {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 4px;
+      font-size: 28px;
+    }
+
+    .month-label {
+      text-align: center;
+      color: #7f8c8d;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+        .month-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .month-nav .month-label {
+      margin-bottom: 0;
+      min-width: 150px;
+    }
+
+    .month-nav button {
+      background: white;
+      border: 1px solid #dfe4e2;
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #2c3e50;
+      font-family: inherit;
+    }
+
+    .month-nav button:hover {
+      background-color: #e4e8e6;
+    }
+
+    .summary-box {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      max-width: 520px;
+      margin: 0 auto 20px auto;
+    }
+
+    .box {
+      background: white;
+      border-radius: 10px;
+      padding: 14px 10px;
+      flex: 1;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .box h3 {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      color: #7f8c8d;
+      font-weight: normal;
+    }
+
+    .box p {
+      margin: 0;
+      font-size: 19px;
+      font-weight: bold;
+    }
+
+    /* ช่องกรอกรายรับ */
+    .income {
+      color: #27ae60;
+      font-size: 18px;
+      font-weight: bold;
+      border: 1px solid #dfe4e2;
+      border-radius: 6px;
+      width: 100%;
+      max-width: 100px;
+      text-align: center;
+      padding: 6px 4px;
+      font-family: inherit;
+    }
+
+    .expense { color: #e74c3c; }
+    .balance { color: #2980b9; }
+
+    .todo-list {
+      max-width: 520px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .todo-list h2 {
+      font-size: 16px;
+      color: #2c3e50;
+      margin-top: 0;
+    }
+
+    /* ฟอร์มเพิ่มรายการใหม่ */
+    .add-form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .add-form input {
+      padding: 8px;
+      border: 1px solid #dfe4e2;
+      border-radius: 6px;
+      font-family: inherit;
+    }
+
+    .add-form input[type="text"] {
+      flex: 2;
+      min-width: 0;
+    }
+
+    .add-form input[type="number"] {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .add-form button {
+      background-color: #2980b9;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    .add-form button:hover {
+      background-color: #21618c;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .todo-item:last-child {
+      border-bottom: none;
+    }
+
+    .todo-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .todo-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .done {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: #c0392b;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px 8px;
+    }
+
+    .delete-btn:hover {
+      text-decoration: underline;
+    }
+
+    .empty-message {
+      color: #aaa;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 14px;
+    }
+
+    .view-switch {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .view-switch button {
+      background: white;
+      border: 1px solid #dfe4e2;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #7f8c8d;
+      font-family: inherit;
+    }
+
+    .view-switch button.active {
+      background-color: #2980b9;
+      color: white;
+      border-color: #2980b9;
+    }
+
+    .year-view {
+      max-width: 520px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .year-title {
+      font-size: 16px;
+      color: #2c3e50;
+      margin-top: 0;
+      text-align: center;
+    }
+    .savings-box {
+      background-color: #eaf6ef;
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .savings-box h3 {
+      margin: 0 0 6px 0;
+      font-size: 13px;
+      color: #27ae60;
+      font-weight: normal;
+    }
+
+    .savings-box p {
+      margin: 0;
+      font-size: 22px;
+      font-weight: bold;
+      color: #27ae60;
+    }
+        .forecast-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .forecast-item {
+      flex: 1;
+      background-color: #eaf1fb;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .forecast-item h3 {
+      margin: 0 0 6px 0;
+      font-size: 12px;
+      color: #2980b9;
+      font-weight: normal;
+    }
+
+    .forecast-item p {
+      margin: 0;
+      font-size: 17px;
+      font-weight: bold;
+      color: #2980b9;
+    }
+    .year-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .year-table th, .year-table td {
+      padding: 8px 6px;
+      text-align: right;
+      border-bottom: 1px solid #eee;
+    }
+
+    .year-table th:first-child, .year-table td:first-child {
+      text-align: left;
+    }
+
+    .year-total-row {
+      font-weight: bold;
+      background-color: #f5f7f6;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="app-title">HomeMoney</h1>
+
+  <div class="month-nav">
+    <button onclick="changeMonth(-1)">◀ เดือนก่อนหน้า</button>
+    <p class="month-label" id="monthLabel">-</p>
+    <button onclick="changeMonth(1)">เดือนถัดไป ▶</button>
+  </div>
+
+  <div class="view-switch">
+    <button id="monthViewBtn" onclick="switchView('month')">มุมมองรายเดือน</button>
+    <button id="yearViewBtn" onclick="switchView('year')">มุมมองรายปี</button>
+  </div>
+
+  <div id="monthView">
+    <div class="summary-box">
+      <div class="box">
+        <h3>รายรับ</h3>
+        <input type="number" class="income" id="incomeInput" oninput="updateSummary()">
+      </div>
+      <div class="box">
+        <h3>รายจ่าย</h3>
+        <p class="expense" id="expenseValue">0 บาท</p>
+      </div>
+      <div class="box">
+        <h3>คงเหลือ</h3>
+        <p class="balance" id="balanceValue">0 บาท</p>
+      </div>
+    </div>
+
+    <div class="todo-list">
+      <h2>รายการค่าใช้จ่ายเดือนนี้</h2>
+
+      <div class="add-form">
+        <input type="text" id="newItemName" placeholder="ชื่อรายการ">
+        <input type="number" id="newItemAmount" placeholder="จำนวนเงิน">
+        <button onclick="addItem()">เพิ่มรายการ</button>
+      </div>
+
+      <div id="todoContainer">
+        <!-- รายการทั้งหมดจะถูกสร้างขึ้นที่นี่โดย JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <div id="yearView" class="year-view" style="display: none;">
+    <h2 class="year-title" id="yearTitle">สรุปรายปี</h2>
+
+    <div class="savings-box">
+      <h3>เงินออมสะสมทั้งหมด</h3>
+      <p id="totalSavings">0 บาท</p>
+    </div>
+
+    <div class="forecast-box">
+      <div class="forecast-item">
+        <h3>คาดการณ์เงินออม 5 ปีข้างหน้า</h3>
+        <p id="forecast5">0 บาท</p>
+      </div>
+      <div class="forecast-item">
+        <h3>คาดการณ์เงินออม 10 ปีข้างหน้า</h3>
+        <p id="forecast10">0 บาท</p>
+      </div>
+    </div>
+
+    <table class="year-table">
+      <thead>
+        <tr>
+          <th>เดือน</th>
+          <th>รายรับ</th>
+          <th>รายจ่าย</th>
+          <th>คงเหลือ</th>
+        </tr>
+      </thead>
+      <tbody id="yearTableBody">
+        <!-- แถวข้อมูลแต่ละเดือนจะถูกสร้างที่นี่โดย JavaScript -->
+      </tbody>
+      <tfoot>
+        <tr class="year-total-row">
+          <td>รวมทั้งปี</td>
+          <td id="yearTotalIncome">0</td>
+          <td id="yearTotalExpense">0</td>
+          <td id="yearTotalBalance">0</td>
+        </tr>
+      </tfoot>
+    </table>
+
+  </div>
+
+  <script>
+            /* ============================================================
+       HomeMoney - Version 2 (Step 2: เลื่อนดูรายเดือนย้อนหลัง)
+    ============================================================ */
+
+    const thaiMonths = [
+      "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+      "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+    ];
+
+    function getMonthKey(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      return y + "-" + m;
+    }
+
+    // แปลง key "2026-09" กลับมาเป็น Date
+    function keyToDate(key) {
+      const parts = key.split("-");
+      return new Date(Number(parts[0]), Number(parts[1]) - 1, 1);
+    }
+
+    // แปลง key ให้เป็นข้อความภาษาไทยอ่านง่าย
+    function formatMonthLabel(key) {
+      const d = keyToDate(key);
+      const thaiYear = d.getFullYear() + 543;
+      return "เดือน" + thaiMonths[d.getMonth()] + " " + thaiYear;
+    }
+
+    const todayKey = getMonthKey(new Date()); // เดือนปัจจุบันจริงๆ (ไม่เปลี่ยนแปลง)
+    let selectedMonthKey = todayKey;          // เดือนที่กำลังแสดงอยู่บนจอ (เปลี่ยนได้)
+
+    // ----- โหลดข้อมูลทั้งหมด (ทุกเดือน) จาก localStorage -----
+    let allData = JSON.parse(localStorage.getItem("homemoney_data")) || {};
+
+    // ----- ย้ายข้อมูลเก่า (จาก Version 1) มาใส่ในโครงสร้างใหม่ ทำแค่ครั้งเดียว -----
+    if (Object.keys(allData).length === 0) {
+      const oldIncome = localStorage.getItem("homemoney_income");
+      const oldItems = JSON.parse(localStorage.getItem("homemoney_items"));
+
+      if (oldIncome !== null || oldItems !== null) {
+        allData[todayKey] = {
+          income: oldIncome !== null ? Number(oldIncome) : 10000,
+          items: oldItems || [
+            { name: "ค่าเช่าบ้าน", amount: 5000, done: false },
+            { name: "ค่าไฟฟ้า", amount: 800, done: false },
+            { name: "ค่าน้ำ", amount: 300, done: false }
+          ]
+        };
+      }
+    }
+
+    // ----- ถ้ายังไม่เคยมีข้อมูลของเดือนปัจจุบันเลย ให้สร้างเดือนใหม่พร้อมตัวอย่าง -----
+    if (!allData[todayKey]) {
+      allData[todayKey] = {
+        income: 0,
+        items: [
+          { name: "ค่าเช่าบ้าน", amount: 5000, done: false },
+          { name: "ค่าไฟฟ้า", amount: 800, done: false },
+          { name: "ค่าน้ำ", amount: 300, done: false }
+        ]
+      };
+    }
+
+    // สร้างข้อมูลให้เดือนใหม่ (ที่ไม่ใช่เดือนปัจจุบัน) ถ้ายังไม่เคยมีข้อมูล
+    // โดยคัดลอกรายการจากเดือนก่อนหน้ามาให้ (รีเซ็ตสถานะติ๊กเป็นยังไม่จ่าย)
+    function ensureMonthExists(key) {
+      if (allData[key]) {
+        return; // มีข้อมูลของเดือนนี้อยู่แล้ว ไม่ต้องทำอะไรเพิ่ม
+      }
+
+      // หา key ของเดือนก่อนหน้าเดือนที่กำลังจะสร้าง
+      const prevDate = keyToDate(key);
+      prevDate.setMonth(prevDate.getMonth() - 1);
+      const prevKey = getMonthKey(prevDate);
+      const prevMonth = allData[prevKey];
+
+      if (prevMonth && prevMonth.items.length > 0) {
+        // คัดลอกรายการจากเดือนก่อนหน้า แต่รีเซ็ต done เป็น false ทุกรายการ
+        const copiedItems = prevMonth.items.map(function (item) {
+          return { name: item.name, amount: item.amount, done: false };
+        });
+
+        allData[key] = { income: prevMonth.income, items: copiedItems };
+      } else {
+        // ถ้าเดือนก่อนหน้าไม่มีข้อมูล หรือไม่มีรายการเลย ก็สร้างเดือนใหม่แบบว่างเปล่า
+        allData[key] = { income: 0, items: [] };
+      }
+    }
+
+    // ฟังก์ชันช่วยเรียกใช้ข้อมูล "เดือนที่กำลังดูอยู่" ได้ง่ายๆ
+    function currentMonth() {
+      return allData[selectedMonthKey];
+    }
+
+    function saveAllData() {
+      localStorage.setItem("homemoney_data", JSON.stringify(allData));
+    }
+
+    // ----- เลื่อนไปเดือนก่อนหน้า / ถัดไป -----
+    function changeMonth(direction) {
+      const d = keyToDate(selectedMonthKey);
+      d.setMonth(d.getMonth() + direction);
+      selectedMonthKey = getMonthKey(d);
+
+      ensureMonthExists(selectedMonthKey);
+      refreshPage();
+    }
+    // ----- สลับมุมมอง (รายเดือน / รายปี) -----
+    let currentView = "month";
+
+    function switchView(view) {
+      currentView = view;
+
+      document.getElementById("monthView").style.display = view === "month" ? "block" : "none";
+      document.getElementById("yearView").style.display = view === "year" ? "block" : "none";
+
+      document.getElementById("monthViewBtn").classList.toggle("active", view === "month");
+      document.getElementById("yearViewBtn").classList.toggle("active", view === "year");
+
+      if (view === "year") {
+        renderYearView();
+      }
+    }
+
+    // ----- คำนวณสรุปของ 1 เดือน จาก key -----
+    function getMonthSummary(key) {
+      const monthData = allData[key];
+      if (!monthData) {
+        return { income: 0, expense: 0, balance: 0 };
+      }
+      let expense = 0;
+      monthData.items.forEach(function (item) {
+        if (item.done) expense += item.amount;
+      });
+      return { income: monthData.income, expense: expense, balance: monthData.income - expense };
+    }
+
+    // ----- วาดตารางสรุปรายปี ของปีเดียวกับเดือนที่กำลังดูอยู่ -----
+    function renderYearView() {
+      const year = keyToDate(selectedMonthKey).getFullYear();
+      const thaiYear = year + 543;
+      document.getElementById("yearTitle").textContent = "สรุปปี " + thaiYear;
+
+      // แสดงเงินออมสะสมทั้งหมด (รวมทุกเดือนทุกปี ไม่ใช่แค่ปีที่กำลังดู)
+      const totalSavings = calculateTotalSavings();
+      document.getElementById("totalSavings").textContent = totalSavings.toLocaleString() + " บาท";
+
+      // แสดงผลคาดการณ์ 5 ปี และ 10 ปีข้างหน้า
+      document.getElementById("forecast5").textContent = Math.round(forecastSavings(5)).toLocaleString() + " บาท";
+      document.getElementById("forecast10").textContent = Math.round(forecastSavings(10)).toLocaleString() + " บาท";
+      // แสดงผลคาดการณ์ 5 ปี และ 10 ปีข้างหน้า
+      document.getElementById("forecast5").textContent = Math.round(forecastSavings(5)).toLocaleString() + " บาท";
+      document.getElementById("forecast10").textContent = Math.round(forecastSavings(10)).toLocaleString() + " บาท";
+      const tbody = document.getElementById("yearTableBody");
+      tbody.innerHTML = "";
+
+      let totalIncome = 0;
+      let totalExpense = 0;
+
+      for (let m = 0; m < 12; m++) {
+        const key = year + "-" + String(m + 1).padStart(2, "0");
+        const summary = getMonthSummary(key);
+
+        totalIncome += summary.income;
+        totalExpense += summary.expense;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${thaiMonths[m]}</td>
+          <td>${summary.income.toLocaleString()}</td>
+          <td>${summary.expense.toLocaleString()}</td>
+          <td>${summary.balance.toLocaleString()}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      const totalBalance = totalIncome - totalExpense;
+      document.getElementById("yearTotalIncome").textContent = totalIncome.toLocaleString();
+      document.getElementById("yearTotalExpense").textContent = totalExpense.toLocaleString();
+      document.getElementById("yearTotalBalance").textContent = totalBalance.toLocaleString();
+    }
+        // ----- คำนวณเงินออมสะสมทั้งหมด (รวมทุกเดือน ทุกปี ที่เคยมีข้อมูล) -----
+    function calculateTotalSavings() {
+      let total = 0;
+
+      // Object.keys(allData) คือการดึง "ชื่อเดือนทั้งหมด" ที่เคยมีข้อมูล เช่น ["2026-08", "2026-09", ...]
+      Object.keys(allData).forEach(function (key) {
+        const summary = getMonthSummary(key);
+        total += summary.balance;
+      });
+
+      return total;
+    }
+        // ----- หาค่าเฉลี่ยเงินคงเหลือต่อเดือน จากข้อมูลจริงทั้งหมดที่มี -----
+    function calculateAverageMonthlySaving() {
+      const keys = Object.keys(allData);
+
+      if (keys.length === 0) {
+        return 0; // ถ้ายังไม่มีข้อมูลเดือนไหนเลย ให้ค่าเฉลี่ยเป็น 0
+      }
+
+      let total = 0;
+      keys.forEach(function (key) {
+        total += getMonthSummary(key).balance;
+      });
+
+      return total / keys.length; // ผลรวม หารด้วยจำนวนเดือนที่มีข้อมูล
+    }
+
+    // ----- คาดการณ์เงินออมในอนาคต จากค่าเฉลี่ยต่อเดือน -----
+    function forecastSavings(years) {
+      const currentSavings = calculateTotalSavings();
+      const avgPerMonth = calculateAverageMonthlySaving();
+
+      return currentSavings + (avgPerMonth * 12 * years);
+    }
+    // ----- วาดรายการทั้งหมดขึ้นหน้าจอ -----
+    function renderItems() {
+      const container = document.getElementById("todoContainer");
+      container.innerHTML = "";
+
+      const items = currentMonth().items;
+
+      if (items.length === 0) {
+        container.innerHTML = '<p class="empty-message">ยังไม่มีรายการในเดือนนี้</p>';
+        return;
+      }
+
+      items.forEach(function (item, index) {
+        const div = document.createElement("div");
+        div.className = "todo-item";
+
+        div.innerHTML = `
+          <div class="todo-item-left">
+            <input type="checkbox" onclick="toggleDone(${index})" ${item.done ? "checked" : ""}>
+            <span class="${item.done ? "done" : ""}">${item.name} - ${item.amount.toLocaleString()} บาท</span>
+          </div>
+          <button class="delete-btn" onclick="deleteItem(${index})">ลบ</button>
+        `;
+
+        container.appendChild(div);
+      });
+    }
+
+    function toggleDone(index) {
+      currentMonth().items[index].done = !currentMonth().items[index].done;
+      saveAllData();
+      renderItems();
+      updateSummary();
+    }
+
+    function deleteItem(index) {
+      currentMonth().items.splice(index, 1);
+      saveAllData();
+      renderItems();
+      updateSummary();
+    }
+
+    function addItem() {
+      const nameInput = document.getElementById("newItemName");
+      const amountInput = document.getElementById("newItemAmount");
+
+      const name = nameInput.value.trim();
+      const amount = Number(amountInput.value);
+
+      if (name === "" || amount <= 0 || isNaN(amount)) {
+        alert("กรุณากรอกชื่อรายการและจำนวนเงินให้ถูกต้อง");
+        return;
+      }
+
+      currentMonth().items.push({ name: name, amount: amount, done: false });
+      saveAllData();
+      renderItems();
+      updateSummary();
+
+      nameInput.value = "";
+      amountInput.value = "";
+      nameInput.focus();
+    }
+
+    function updateSummary() {
+      const income = Number(document.getElementById("incomeInput").value) || 0;
+      currentMonth().income = income;
+      saveAllData();
+
+      let totalExpense = 0;
+      currentMonth().items.forEach(function (item) {
+        if (item.done) {
+          totalExpense += item.amount;
+        }
+      });
+
+      const balance = income - totalExpense;
+
+      document.getElementById("expenseValue").textContent = totalExpense.toLocaleString() + " บาท";
+      document.getElementById("balanceValue").textContent = balance.toLocaleString() + " บาท";
+    }
+
+    // ----- วาดหน้าจอใหม่ทั้งหมด (เรียกทุกครั้งที่เปลี่ยนเดือน หรือเปิดหน้าเว็บ) -----
+    function refreshPage() {
+      document.getElementById("monthLabel").textContent = formatMonthLabel(selectedMonthKey);
+      document.getElementById("incomeInput").value = currentMonth().income;
+      renderItems();
+      updateSummary();
+    }
+
+    // ----- ตอนเปิดหน้าเว็บครั้งแรก -----
+    refreshPage();
+        
+  </script>
+</body>
+</html>
